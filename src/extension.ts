@@ -21,7 +21,9 @@ export function activate(context: vscode.ExtensionContext) {
                         vscode.window.showInformationMessage(MISSING_BUILDIFIER_MESSAGE);
                         return reject(MISSING_BUILDIFIER_MESSAGE);
                     }
-
+                    if (buildifierPath.includes("$workspaceFolder")) {
+                        buildifierPath = buildifierPath.replace("$workspaceFolder",vscode.workspace.rootPath)
+                    }
                     cp.execFile(buildifierPath, ["-mode=fix", document.fileName], {},
                         (err, stdout, stderr) => {
                             if (err && (<any>err).code == 'ENOENT') {
